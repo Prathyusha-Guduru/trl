@@ -332,15 +332,6 @@ class PPOTrainer(Trainer):
             if self.ref_adapter_name:
                 self.model.policy.set_adapter(self.model_adapter_name or "default")
 
-    
-    @contextmanager
-    def accumulate_context(model, accelerator):
-        if accelerator.distributed_type == "DEEPSPEED" and accelerator.state.deepspeed_plugin.zero_stage >= 2:
-            ctx = nullcontext()
-        else:
-            ctx = getattr(model, "no_sync", nullcontext)
-        with ctx():
-            yield
 
     def save_model(self, output_dir: Optional[str] = None, _internal_call: bool = False):
         backup_model = self.model
@@ -559,7 +550,7 @@ class PPOTrainer(Trainer):
                     mini_batch_inds = b_inds[mini_batch_start:mini_batch_end]
                     gradient_accumulation_idx = 0
                     for micro_batch_start in range(0, args.local_mini_batch_size, args.per_device_train_batch_size):
-                        with self.accumulate_context(model, accelerator):
+                        with accelerator.accumulate(model):
                             micro_batch_end = micro_batch_start + args.per_device_train_batch_size
                             micro_batch_inds = mini_batch_inds[micro_batch_start:micro_batch_end]
                             mb_advantage = advantages[micro_batch_inds]
