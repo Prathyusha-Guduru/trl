@@ -126,7 +126,7 @@ class PPOTrainer(Trainer):
         self.args = args
         self.processing_class = processing_class
         self.policy_model = model
-        self.create_accelerator_and_postprocess()
+        # self.create_accelerator_and_postprocess()
 
         # Define the collator if not provided
         if data_collator is None:
@@ -347,6 +347,7 @@ class PPOTrainer(Trainer):
         if self.is_deepspeed_enabled:
             self.deepspeed = backup_deepspeed
 
+    # @record
     def train(self):
         print("training started")
         args = self.args
