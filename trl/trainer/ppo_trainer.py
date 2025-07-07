@@ -227,11 +227,13 @@ class PPOTrainer(Trainer):
         for module in [self.policy_model, self.ref_model, self.value_model, self.reward_model]:
             if module is not None:
                 disable_dropout_in_model(module)
+        for param in self.policy_model.parameters():
+            param.requires_grad = False
         self.model = PolicyAndValueWrapper(self.policy_model, self.value_model)
         self.model.config = self.policy_model.config  # needed for pushing to hub
-        self.create_optimizer_and_scheduler(
-            num_training_steps=args.num_total_batches
-        )  # note that we are calling `self.lr_scheduler.step()` manually only at the batch level
+        # self.create_optimizer_and_scheduler(
+        #     num_training_steps=args.num_total_batches
+        # )  # note that we are calling `self.lr_scheduler.step()` manually only at the batch level
 
         #########
         ### trainer specifics
@@ -645,7 +647,7 @@ class PPOTrainer(Trainer):
                 self.state.global_step += 1
                 self.log(metrics)
 
-            self.lr_scheduler.step()
+            # self.lr_scheduler.step() commenting to not update the learning rate at the end of the batch
             self.control = self.callback_handler.on_step_end(args, self.state, self.control)
             if self.control.should_save:
                 self._save_checkpoint(model, trial=None)
