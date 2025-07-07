@@ -126,6 +126,7 @@ class PPOTrainer(Trainer):
         self.args = args
         self.processing_class = processing_class
         self.policy_model = model
+        self.create_accelerator_and_postprocess()
 
         # Define the collator if not provided
         if data_collator is None:
