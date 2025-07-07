@@ -27,12 +27,13 @@ from transformers import (
 from trl import (
     ModelConfig,
     PPOConfig,
-    PPOTrainer,
     ScriptArguments,
     get_kbit_device_map,
     get_peft_config,
     get_quantization_config,
 )
+
+from trl.trainer.ppo_trainer import PPOTrainer
 from trl.trainer.utils import SIMPLE_CHAT_TEMPLATE
 
 
