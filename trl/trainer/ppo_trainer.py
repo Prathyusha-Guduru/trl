@@ -122,7 +122,7 @@ class PPOTrainer(Trainer):
                 "`model` and `ref_model` cannot be the same object. If you want `ref_model` to be the "
                 "same as `model`, you must make a copy of it, or `None` if you use peft."
             )
-
+        print("PPOTrainer initialized")
         self.args = args
         self.processing_class = processing_class
         self.policy_model = model
@@ -347,6 +347,7 @@ class PPOTrainer(Trainer):
             self.deepspeed = backup_deepspeed
 
     def train(self):
+        print("training started")
         args = self.args
         accelerator = self.accelerator
         optimizer = self.optimizer
