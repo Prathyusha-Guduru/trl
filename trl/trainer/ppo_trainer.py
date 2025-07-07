@@ -77,6 +77,8 @@ if is_peft_available():
 if is_wandb_available():
     import wandb
 
+from accelerate.state import AcceleratorState
+
 
 INVALID_LOGPROB = 1.0
 
@@ -126,8 +128,13 @@ class PPOTrainer(Trainer):
         self.args = args
         self.processing_class = processing_class
         self.policy_model = model
-        accelerator = Accelerator(gradient_accumulation_steps=args.gradient_accumulation_steps)
-        # self.create_accelerator_and_postprocess()
+
+        if AcceleratorState._shared_state:
+            accelerator = Accelerator()
+        else:
+            # F,sor single-process training, create with gradient accumulation steps
+            accelerator = Accelerator(gradient_accumulation_steps=args.gradient_accumulation_steps)
+
 
         # Define the collator if not provided
         if data_collator is None:
