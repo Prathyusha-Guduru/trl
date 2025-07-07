@@ -35,7 +35,6 @@ from trl import (
 
 from trl.trainer.ppo_trainer import PPOTrainer
 from trl.trainer.utils import SIMPLE_CHAT_TEMPLATE
-from accelerate import Accelerator
 
 
 
@@ -78,7 +77,6 @@ accelerate launch --config_file examples/accelerate_configs/deepspeed_zero2.yaml
 
 
 if __name__ == "__main__":
-    accelerator = Accelerator()
     parser = HfArgumentParser((ScriptArguments, PPOConfig, ModelConfig))
     script_args, training_args, model_args = parser.parse_args_into_dataclasses()
     # remove output_dir if exists
